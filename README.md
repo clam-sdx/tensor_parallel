@@ -22,3 +22,10 @@ FlashAttention is only supported on CUDA 11.7 and above, so `pip3 install flash-
 2. the folder printed when you do `which nvcc` is within `echo $CUDA_HOME`
 
 - For example, supposed your CUDA is version 12.1, then `which nvcc` is `/usr/local/cuda-12.1/bin/nvcc` and  `echo $CUDA_HOME` needs to be set to `export CUDA_HOME=/usr/local/cuda-12.1`
+
+
+## Quickstart
+
+```
+torchrun --nproc_per_node 4 train.py --tp_size 4 --micro_batch_size 4 --gradient_accumulation_steps 8 --seq_len 1024 --max_tokens 4096000 --num_proc 16 --model_name TinyLlama/TinyLlama_v1.1 --num_hidden_layers 22 --num_attention_heads 32 --num_key_value_heads 4 --run_name tp_1B --use_wandb 
+```

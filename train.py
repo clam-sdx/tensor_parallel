@@ -1,9 +1,8 @@
 """
-torchrun --nproc_per_node 4 train.py --tp_size 4 --micro_batch_size 4 --gradient_accumulation_steps 8 --seq_len 128 --max_tokens 40960 --num_proc 16 --run_name tp_naive --use_wandb
+torchrun --nproc_per_node 4 train.py --tp_size 4 --micro_batch_size 4 --gradient_accumulation_steps 8 --seq_len 128 --max_tokens 40960 --num_proc 16 --run_name tp_naive
 """
 import os
 import time
-import wandb
 import datetime
 import torch
 import torch.nn.functional as F
@@ -79,7 +78,6 @@ if __name__ == "__main__":
 
     # Logging arguments
     parser.add_argument("--run_name", type=str, default="default_run")
-    parser.add_argument("--use_wandb", action="store_true")
 
     args = parser.parse_args()
 
@@ -99,22 +97,7 @@ if __name__ == "__main__":
     dist.init_process_group(rank=global_rank, world_size=world_size, backend=backend, init_method=f"env://", timeout=datetime.timedelta(minutes=2))
     setup_process_group_manager(dp_size=args.dp_size, pp_size=args.pp_size, tp_size=args.tp_size)
 
-    is_wandb_rank = pgm.process_group_manager.tp_rank == 0 and pgm.process_group_manager.dp_rank == 0 and pgm.process_group_manager.pp_is_last_stage
     set_all_seed(args.seed)
-
-    if is_wandb_rank and args.use_wandb:
-        wandb.init(
-            project="picotron_tutorial",
-            name=f"{args.run_name}_{pgm.process_group_manager}",
-            config={
-                "tensor_parallel_size": pgm.process_group_manager.tp_world_size,
-                "pipeline_parallel_size": pgm.process_group_manager.pp_world_size,
-                "data_parallel_size": pgm.process_group_manager.dp_world_size,
-                "model": args.model_name,
-                "learning_rate": args.learning_rate,
-                "seed": args.seed,
-            },
-        )
 
     model_config = AutoConfig.from_pretrained(args.model_name)
     model_config.num_hidden_layers = args.num_hidden_layers
@@ -150,7 +133,7 @@ if __name__ == "__main__":
    
     tokens_per_step = dataloader.global_batch_size * args.seq_len
     if pgm.process_group_manager.global_rank == 0:
-        print("Tokens per step:", to_readable_format(tokens_per_step), is_print_rank=is_wandb_rank)
+        print("Tokens per step:", to_readable_format(tokens_per_step))
 
     trained_token, step = 0, 0
 
@@ -176,14 +159,7 @@ if __name__ == "__main__":
             f"Tokens/s/GPU: {to_readable_format(tokens_per_step / step_duration / world_size)}, "
             f"Tokens: {to_readable_format(trained_token)}{('/' + to_readable_format(args.max_tokens))}, "
             f"Memory usage: {torch.cuda.memory_reserved() / 1e9:.2f}GB"
-            , is_print_rank=is_wandb_rank
         )
         
-        if is_wandb_rank and args.use_wandb:
-            wandb.log({"loss": loss, "tokens_per_step": tokens_per_step, "tokens_per_second": tokens_per_step / step_duration,\
-                "memory_usage": torch.cuda.memory_reserved() / 1e9, "trained_tokens": tokens_per_step})
-
-    if is_wandb_rank and args.use_wandb:
-        wandb.finish()
 
     dist.destroy_process_group()
