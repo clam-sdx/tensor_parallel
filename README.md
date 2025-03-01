@@ -1,5 +1,9 @@
 # tensor_parallel
 
+## Requirements
+
+BF16 (bfloat16) operations are only available on NVIDIA GPUs with compute capability 8.0 (Ampere architecture) or higher.
+
 ## Setup
 
 ```
