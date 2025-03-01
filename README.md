@@ -16,6 +16,15 @@ pip config set global.index-url https://pypi.org/simple
 pip install -e .
 ```
 
+if you just want to play with the notebooks on cpu, you can comment out flash attention, `#flash-attn==2.5.0` and `uv pip install -e .` for quick installation of the deep learning dependies, ie `torch` etc. Then install jupyter notebook. 
+
+```
+uv pip install jupyterlab notebook
+python -m uv pip install --upgrade ipykernel
+python -m ipykernel install --user
+jupyter notebook --port 2222
+```
+
 
 ## Flash Attention
 
