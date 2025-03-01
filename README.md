@@ -15,7 +15,9 @@ pip install -e .
 
 ## Flash Attention
 
-FlashAttention is only supported on CUDA 11.7 and above. If you run into trouble with `pip3 install flash-attn --no-build-isolation`, it might be that your system is not configured in a way that the compiler can find the necessary CUDA components through default paths. Try these:
+FlashAttention is only supported on CUDA 11.7 and above. 
+
+If you run into trouble retrying with `pip3 install flash-attn --no-build-isolation`, it might be that your system is not configured in a way that the compiler can find the necessary CUDA components through default paths. Try these:
 
 1. Make the version of cuda you see when doing `nvidia-smi -l` matche the version you see when doing `nvcc -V`
 
