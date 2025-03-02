@@ -5,7 +5,7 @@ from functools import partial
 from datasets import Features, Sequence, Value, load_dataset
 from transformers import AutoTokenizer
 
-import process_group_manager as pgm
+import tensor_parallel.tensor_parallel.process_group_manager as pgm
 
 class MicroBatchDataLoader(DataLoader):
     def __init__(self, seq_len, micro_batch_size, grad_acc_steps, dataset_name, tokenizer_name, max_tokens, num_workers, num_proc, split="train"):

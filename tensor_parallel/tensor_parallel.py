@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.distributed as dist
 import torch.nn.functional as F
-import process_group_manager as pgm
+import tensor_parallel.tensor_parallel.process_group_manager as pgm
 
 ### begin TP communications
 def split_tensor_along_last_dim(tensor, num_partitions):

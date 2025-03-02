@@ -20,7 +20,7 @@ if you just want to play with the notebooks on cpu, you can comment out flash at
 
 ```
 uv pip install jupyterlab notebook
-python -m uv pip install --upgrade ipykernel
+uv pip install --upgrade ipykernel
 python -m ipykernel install --user
 jupyter notebook --port 2222
 ```
