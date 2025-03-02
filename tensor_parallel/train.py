@@ -15,9 +15,9 @@ import lovely_tensors as lt; lt.monkey_patch()
 
 from tensor_parallel.tensor_parallel.model import Llama
 from tensor_parallel.tensor_parallel.dataloader import MicroBatchDataLoader
-import process_group_manager as pgm
-from process_group_manager import setup_process_group_manager
-from utils import set_all_seed, print, to_readable_format
+import tensor_parallel.tensor_parallel.process_group_manager as pgm
+from tensor_parallel.tensor_parallel.process_group_manager import setup_process_group_manager
+from tensor_parallel.tensor_parallel.utils import set_all_seed, print, to_readable_format
 
 from tensor_parallel import apply_tensor_parallel
 

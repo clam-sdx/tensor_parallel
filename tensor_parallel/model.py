@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from flash_attn.flash_attn_interface import flash_attn_func
 from flash_attn.layers.rotary import apply_rotary_emb
 from flash_attn.ops.triton.layer_norm import layer_norm_fn
-import process_group_manager as pgm
+import tensor_parallel.tensor_parallel.process_group_manager as pgm
 
 def flash_attention(q, k, v, causal = True):
     q = q.permute(0, 2, 1, 3) # [batch_size, seq_length, num_head , head_dim]
